@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bedrock AI Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --dark-bg: #0f1419;
+            --card-bg: #1a1f2e;
+            --text-primary: #e4e6ea;
+            --text-secondary: #9ca3af;
+            --border-color: #2d3748;
+            --hover-bg: #2d3748;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-gradient);
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            animation: grain 8s linear infinite;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -5%); }
+            20% { transform: translate(-10%, 5%); }
+            30% { transform: translate(5%, -10%); }
+            40% { transform: translate(-5%, 15%); }
+            50% { transform: translate(-10%, 5%); }
+            60% { transform: translate(15%, 0%); }
+            70% { transform: translate(0%, 10%); }
+            80% { transform: translate(-15%, 0%); }
+            90% { transform: translate(10%, 5%); }
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.3)); }
+            to { filter: drop-shadow(0 0 30px rgba(118, 75, 162, 0.5)); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .status-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .status-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .status-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--success-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .status-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .status-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .capabilities-section {
+            margin-top: 4rem;
+        }
+
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .capability-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .capability-card:hover {
+            transform: translateY(-3px);
+            border-color: #667eea;
+        }
+
+        .capability-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+        }
+
+        .capability-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .capability-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .cta-section {
+            margin-top: 4rem;
+        }
+
+        .cta-button {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .models-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .model-badge {
+            background: var(--success-gradient);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .version-info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .version-info h6 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .version-info small {
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .capabilities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">
+                <i class="fas fa-robot me-3"></i>
+                Bedrock AI Assistant
+            </h1>
+            <p class="hero-subtitle">
+                Powered by AWS Bedrock & Advanced ReAct Agents with Real-time Tool Calling
+            </p>
+
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-icon">
+                        {% if credentials_valid %}
+                            <i class="fas fa-check-circle"></i>
+                        {% else %}
+                            <i class="fas fa-exclamation-triangle"></i>
+                        {% endif %}
+                    </div>
+                    <h3 class="status-title">AWS Connection</h3>
+                    <p class="status-description">
+                        {% if credentials_valid %}
+                            Successfully connected to AWS Bedrock with valid credentials
+                        {% else %}
+                            AWS credentials not configured or invalid
+                        {% endif %}
+                    </p>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">
+                        {% if available_models %}
+                            <i class="fas fa-brain"></i>
+                        {% else %}
+                            <i class="fas fa-robot"></i>
+                        {% endif %}
+                    </div>
+                    <h3 class="status-title">AI Models</h3>
+                    <p class="status-description">
+                        {% if available_models %}
+                            {{ available_models|length }} AI models available and ready
+                        {% else %}
+                            No AI models available
+                        {% endif %}
+                    </p>
+                    {% if available_models %}
+                    <div class="models-list">
+                        {% for model_name, model_id in available_models.items() %}
+                            <span class="model-badge">{{ model_name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="status-card">
+                    <div class="status-icon">
+                        {% if chat_agent %}
+                            <i class="fas fa-cogs"></i>
+                        {% else %}
+                            <i class="fas fa-exclamation-circle"></i>
+                        {% endif %}
+                    </div>
+                    <h3 class="status-title">ReAct Agent</h3>
+                    <p class="status-description">
+                        {% if chat_agent %}
+                            Advanced reasoning agent with tool calling capabilities ready
+                        {% else %}
+                            ReAct agent not initialized
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+
+            <div class="capabilities-section">
+                <h2 class="text-center mb-4">✨ What Can I Do?</h2>
+                <div class="capabilities-grid">
+                    <div class="capability-card">
+                        <div class="capability-icon"><i class="fas fa-comments"></i></div>
+                        <h4 class="capability-title">Intelligent Conversations</h4>
+                        <p class="capability-description">Engage in natural, context-aware conversations with advanced AI models</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon"><i class="fas fa-tools"></i></div>
+                        <h4 class="capability-title">Tool Integration</h4>
+                        <p class="capability-description">Access web search, calculator, code execution, weather, and file operations</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon"><i class="fas fa-brain"></i></div>
+                        <h4 class="capability-title">ReAct Reasoning</h4>
+                        <p class="capability-description">Watch AI think step-by-step with reasoning, action, and observation cycles</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon"><i class="fas fa-stream"></i></div>
+                        <h4 class="capability-title">Real-time Streaming</h4>
+                        <p class="capability-description">Experience live responses with streaming text and thinking processes</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon"><i class="fas fa-code"></i></div>
+                        <h4 class="capability-title">Code Assistance</h4>
+                        <p class="capability-description">Get help with programming, debugging, and code execution</p>
+                    </div>
+                    
+                    <div class="capability-card">
+                        <div class="capability-icon"><i class="fas fa-search"></i></div>
+                        <h4 class="capability-title">Research & Analysis</h4>
+                        <p class="capability-description">Perform web research, data analysis, and comprehensive investigations</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                {% if credentials_valid and available_models %}
+                    <a href="/chat" class="cta-button">
+                        <i class="fas fa-rocket me-2"></i>
+                        Start Chatting
+                    </a>
+                {% else %}
+                    <div class="alert alert-warning mt-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Please configure AWS credentials to start using the application
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="version-info">
+                <h6><i class="fas fa-info-circle me-2"></i>System Information</h6>
+                <small>
+                    LangChain {{ langchain_version }} • 
+                    LangGraph {{ langgraph_version }} • 
+                    AWS Bedrock Integration
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
